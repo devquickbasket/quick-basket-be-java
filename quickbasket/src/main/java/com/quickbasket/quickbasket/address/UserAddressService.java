@@ -36,6 +36,7 @@ public class UserAddressService {
         userAddress.setState(userAddressRequest.getState());
         userAddress.setLatitude(userAddressRequest.getLatitude());
         userAddress.setLongitude(userAddressRequest.getLongitude());
+        userAddress.setStreet(userAddressRequest.getStreet());
 
         userAddress.setUser(user);
 
@@ -53,7 +54,8 @@ public class UserAddressService {
 
         userAddressRepository.changeAllUserAddressStatus(userId,100);
 
-        userAddress.setStatus(100);
+        userAddress.setStatus(200);
+
 
         UserAddress savedAddress = userAddressRepository.save(userAddress);
         return new UserAddressResponse(savedAddress);
