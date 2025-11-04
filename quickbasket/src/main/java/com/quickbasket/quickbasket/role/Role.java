@@ -2,6 +2,7 @@ package com.quickbasket.quickbasket.role;
 
 import com.quickbasket.quickbasket.permission.Permission;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @Entity
+@AllArgsConstructor
 public class Role {
 
     @Id

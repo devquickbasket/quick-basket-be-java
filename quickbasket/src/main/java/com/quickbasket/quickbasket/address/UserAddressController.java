@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,11 +22,14 @@ public class UserAddressController {
     @Autowired
     private UserAddressService userAddressService;
 
+
     @GetMapping("/index")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ApiResponse> getUserAddresses() {
         try{
 
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
             CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
 
             List<UserAddressResponse> userAddresses = userAddressService.userAddress(userDetails.getId());
@@ -50,6 +54,7 @@ public class UserAddressController {
     }
 
     @PostMapping("/store")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ApiResponse> storeUserAddress(@RequestBody AddUserAddressRequest userAddressRequest) {
         try{
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -73,6 +78,7 @@ public class UserAddressController {
     }
 
     @PatchMapping("/change-status")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ApiResponse> changeStatus(@RequestBody ChangeStatusRequest request){
         try{
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();

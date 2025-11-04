@@ -43,8 +43,8 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(request.getPassword()));
 
 
-            Role defaultRole = roleRepository.findByName("USER")
-                    .orElseThrow(() -> new RuntimeException("Default role not found"));
+            Role defaultRole = roleRepository.findByName("ROLE_USER")
+                    .orElseThrow(() -> new RuntimeException("role not found"));
             user.setRoles(Set.of(defaultRole));
 
             return userRepository.save(user);

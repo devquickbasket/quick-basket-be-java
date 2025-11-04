@@ -1,18 +1,21 @@
 package com.quickbasket.quickbasket.address;
 
+import com.quickbasket.quickbasket.customs.Utils.BaseEntity;
 import com.quickbasket.quickbasket.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class UserAddress {
+public class UserAddress extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;

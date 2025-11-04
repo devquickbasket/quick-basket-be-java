@@ -14,21 +14,21 @@ public class RoleSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (roleRepository.findByName("USER").isEmpty()) {
+        if (roleRepository.findByName("ROLE_USER").isEmpty()) {
             Role userRole = new Role();
-            userRole.setName("USER");
+            userRole.setName("ROLE_USER");
             roleRepository.save(userRole);
         }
 
-        if (roleRepository.findByName("ADMIN").isEmpty()) {
+        if (roleRepository.findByName("ROLE_ADMIN").isEmpty()) {
             Role adminRole = new Role();
-            adminRole.setName("ADMIN");
+            adminRole.setName("ROLE_ADMIN");
             roleRepository.save(adminRole);
         }
 
-        if (roleRepository.findByName("AGENT").isEmpty()) {
+        if (roleRepository.findByName("ROLE_AGENT").isEmpty()) {
             Role adminRole = new Role();
-            adminRole.setName("AGENT");
+            adminRole.setName("ROLE_AGENT");
             roleRepository.save(adminRole);
         }
 

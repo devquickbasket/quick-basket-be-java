@@ -1,10 +1,14 @@
 package com.quickbasket.quickbasket.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.quickbasket.quickbasket.address.UserAddress;
+import com.quickbasket.quickbasket.customs.Utils.BaseEntity;
 import com.quickbasket.quickbasket.role.Role;
+import com.quickbasket.quickbasket.shop.Shop;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
@@ -13,11 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User extends BaseEntity {
 
     @Id()
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -45,6 +50,7 @@ public class User {
     private boolean is_email_verified = false;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<UserAddress> addresses = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -54,4 +60,8 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles;
+
+    @ManyToOne
+    @JoinColumn(name = "shop_id")
+    private Shop shop;
 }
