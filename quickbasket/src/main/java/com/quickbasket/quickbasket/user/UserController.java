@@ -10,14 +10,11 @@ import com.quickbasket.quickbasket.user.requests.UserRegistrationRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.BadRequestException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -25,11 +22,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private OtpService otpService;
+    private final UserService userService;  // ✅ Now properly injected
+    private final OtpService otpService;    // ✅ Now properly injected
 
     @GetMapping("/me")
     public ResponseEntity<?> getAuthenticatedUser(Authentication authentication) {
@@ -37,118 +31,63 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    private ResponseEntity<?> register(@RequestBody UserRegistrationRequest request)
-    {
-        try{
+    public ResponseEntity<?> register(@RequestBody UserRegistrationRequest request) {
+        try {
             request.setRole("ROLE_USER");
-
             User user = userService.register(request);
-
             otpService.generateAndSendOtp(user.getEmail());
 
-            ApiResponse<?> response = new ApiResponse<>(
-                    true,
-                    "User registration successful",
-                    user
-            );
-
-           return ResponseEntity.ok(response);
-
-        }catch (Exception exception){
-            ApiResponse<?> errorResponse = new ApiResponse<>(
-                    false,
-                    exception.getMessage(),
-                    null
-            );
-            return ResponseEntity.badRequest().body(errorResponse);
+            return ResponseEntity.ok(new ApiResponse<>(true, "User registration successful", user));
+        } catch (Exception exception) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, exception.getMessage(), null));
         }
     }
 
     @PostMapping("/otp/verify")
-    private ResponseEntity<?> verifyOtp(@RequestBody OtpVerificationRequest request)
-    {
-        try{
-            boolean validateOtp = otpService.verifyOtp(request.getEmail(),request.getOtp());
+    public ResponseEntity<?> verifyOtp(@RequestBody OtpVerificationRequest request) {
+        try {
+            boolean valid = otpService.verifyOtp(request.getEmail(), request.getOtp());
 
-            if(!validateOtp){
-                throw  new BadRequestException("Invalid OTP");
-            }
-            User activateUser = userService.activateUser(request.getEmail());
+            if (!valid) throw new BadRequestException("Invalid OTP");
 
-            ApiResponse<?> response = new ApiResponse<>(
-                    true,
-                    "User verification successful",
-                    activateUser
-            );
-
-            return ResponseEntity.ok(response);
+            User user = userService.activateUser(request.getEmail());
+            return ResponseEntity.ok(new ApiResponse<>(true, "User verification successful", user));
 
         } catch (Exception e) {
-            return  ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, e.getMessage(), null));
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request){
-        try{
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        try {
             LoginResponse login = userService.login(request);
-
-            ApiResponse<?> response = new ApiResponse<>(
-                    true,
-                    "User Login successful",
-                    login
-            );
-
-            return ResponseEntity.ok(response);
-
-        }catch (Exception exception){
-            ApiResponse<?> errorResponse = new ApiResponse<>(
-                    false,
-                    exception.getMessage(),
-                    null
-            );
-            return ResponseEntity.badRequest().body(errorResponse);
+            return ResponseEntity.ok(new ApiResponse<>(true, "User login successful", login));
+        } catch (Exception exception) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, exception.getMessage(), null));
         }
     }
 
     @GetMapping("/admin/index")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse> allUsers(@ModelAttribute UserFilterRequest request){
-        try{
-            Page<UserResponse> userResponsePage = userService.getAllUsers(request);
-
-            return  ResponseEntity.ok(new ApiResponse<>(
-                    true,
-                    "Users found",
-                    userResponsePage
-            ));
-        }
-        catch (Exception ex){
+    @PreAuthorize("hasRole('ADMIN')")  // ✅ Works with ROLE_ADMIN
+    public ResponseEntity<ApiResponse> allUsers(@ModelAttribute UserFilterRequest request) {
+        try {
+            Page<UserResponse> users = userService.getAllUsers(request);
+            return ResponseEntity.ok(new ApiResponse<>(true, "Users found", users));
+        } catch (Exception ex) {
             log.error("all users error", ex);
-            ApiResponse<?> errorResponse = new ApiResponse<>();
-            errorResponse.setMessage(ex.getMessage());
-            return ResponseEntity.badRequest().body(errorResponse);
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
         }
     }
 
     @PostMapping("/admin/create")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse> createUser(UserRegistrationRequest request){
-
-            try{
-                User user = userService.register(request);
-                ApiResponse<?> response = new ApiResponse<>(
-                        true,
-                        "User registration successful",
-                        user
-                );
-                return ResponseEntity.ok(response);
-            }catch (Exception ex){
-                ApiResponse<?> errorResponse = new ApiResponse<>();
-                errorResponse.setMessage(ex.getMessage());
-                return ResponseEntity.badRequest().body(errorResponse);
-            }
-
+    public ResponseEntity<ApiResponse> createUser(@RequestBody UserRegistrationRequest request) {
+        try {
+            User user = userService.register(request);
+            return ResponseEntity.ok(new ApiResponse<>(true, "User created successfully", user));
+        } catch (Exception ex) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, ex.getMessage(), null));
+        }
     }
-
 }

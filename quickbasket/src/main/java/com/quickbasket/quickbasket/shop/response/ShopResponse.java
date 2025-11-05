@@ -1,5 +1,6 @@
-package com.quickbasket.quickbasket.shop;
+package com.quickbasket.quickbasket.shop.response;
 
+import com.quickbasket.quickbasket.shop.Shop;
 import lombok.Data;
 
 @Data

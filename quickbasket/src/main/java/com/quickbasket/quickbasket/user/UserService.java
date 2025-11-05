@@ -4,13 +4,11 @@ import com.quickbasket.quickbasket.customs.Utils.JwtUtil;
 import com.quickbasket.quickbasket.customs.response.LoginResponse;
 import com.quickbasket.quickbasket.role.Role;
 import com.quickbasket.quickbasket.role.RoleRepository;
-import com.quickbasket.quickbasket.shop.ShopResponse;
 import com.quickbasket.quickbasket.user.requests.LoginRequest;
 import com.quickbasket.quickbasket.user.requests.UserFilterRequest;
 import com.quickbasket.quickbasket.user.requests.UserRegistrationRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +31,8 @@ public class UserService {
     public User register(UserRegistrationRequest request){
         try{
 
+            log.info("Request payload {}", request);
+
             if (!request.getPassword().equals(request.getConfirmPassword())) {
                 throw new IllegalArgumentException("Passwords do not match");
             }
@@ -49,6 +49,7 @@ public class UserService {
 
             if (request.getRole().equalsIgnoreCase("ROLE_AGENT")){
                 user.set_email_verified(true);
+                user.setStatus(200);
             }
 
             Role defaultRole = roleRepository.findByName(request.getRole())

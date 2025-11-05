@@ -26,4 +26,5 @@ public class CreateShopRequest {
 
     private String slug;
     private String logo;
+    private Integer status;
 }
