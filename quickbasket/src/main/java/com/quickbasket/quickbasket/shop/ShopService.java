@@ -32,6 +32,16 @@ public class ShopService {
         return shopPage;
     }
 
+    public List<ShopResponse> shopAll() {
+
+        return shopRepository.findByStatus(200)
+                .stream()
+                .map(ShopResponse::new)
+                .collect(Collectors.toList());
+    }
+
+
+
     public ShopResponse create(CreateShopRequest request) {
 
         Shop shop = new Shop(request);

@@ -3,6 +3,7 @@ package com.quickbasket.quickbasket.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.quickbasket.quickbasket.address.UserAddress;
 import com.quickbasket.quickbasket.customs.Utils.BaseEntity;
+import com.quickbasket.quickbasket.order.Order;
 import com.quickbasket.quickbasket.role.Role;
 import com.quickbasket.quickbasket.shop.Shop;
 import jakarta.persistence.*;
@@ -52,6 +53,10 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<UserAddress> addresses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<Order> orders = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

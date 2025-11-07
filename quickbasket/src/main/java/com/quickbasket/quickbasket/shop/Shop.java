@@ -1,6 +1,7 @@
 package com.quickbasket.quickbasket.shop;
 
 import com.quickbasket.quickbasket.customs.Utils.BaseEntity;
+import com.quickbasket.quickbasket.order.Order;
 import com.quickbasket.quickbasket.shop.requests.CreateShopRequest;
 import com.quickbasket.quickbasket.user.User;
 import jakarta.persistence.*;
@@ -39,6 +40,10 @@ public class Shop extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<User> agents = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "shop", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> shopOrders = new ArrayList<>();
 
     public Shop(CreateShopRequest request) {
        address = request.getAddress();

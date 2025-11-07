@@ -77,6 +77,7 @@ public class ShopController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/admin/assignAgent")
     public ResponseEntity<ApiResponse> AssignAgent(@RequestBody AssignAgentRequest request){
         try{
@@ -98,6 +99,19 @@ public class ShopController {
             List<ShopAgentResponse> agents = shopService.shopAgents(shopId);
 
             return ResponseEntity.ok(new ApiResponse(true, "success", agents));
+        }catch (Exception ex){
+            log.error(ex.getMessage(), ex);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, ex.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/users")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<ApiResponse> listShops() {
+        try{
+            List<ShopResponse> shops = shopService.shopAll();
+
+            return ResponseEntity.ok(new ApiResponse(true, "success", shops));
         }catch (Exception ex){
             log.error(ex.getMessage(), ex);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse(false, ex.getMessage(), null));
