@@ -30,6 +30,7 @@ public class Shop extends BaseEntity {
     private String latitude;
     private String logo;
     private String email;
+    private String phoneNumber;
     private String slug;
     private Integer status = 200;
 

@@ -2,10 +2,11 @@ package com.quickbasket.quickbasket.order;
 
 import com.quickbasket.quickbasket.customs.response.ApiResponse;
 import com.quickbasket.quickbasket.order.request.CreateOrderRequest;
-import com.quickbasket.quickbasket.orderItem.AddOrderItemRequest;
-import com.quickbasket.quickbasket.orderItem.OrderItem;
+import com.quickbasket.quickbasket.order.request.OrderSearchRequest;
+import com.quickbasket.quickbasket.orderItem.request.AddOrderItemRequest;
 import com.quickbasket.quickbasket.orderItem.OrderItemResponse;
 import com.quickbasket.quickbasket.orderItem.OrderItemService;
+import com.quickbasket.quickbasket.orderItem.request.AgentUpdateItemRequest;
 import com.quickbasket.quickbasket.security.CustomUserDetails;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -75,7 +76,96 @@ public class OrderController {
         }
     }
 
+    @GetMapping("/agent/orders")
+    @PreAuthorize("hasRole('AGENT')")
+    public ResponseEntity<ApiResponse> agentOrders(@ModelAttribute OrderSearchRequest request) {
+        try{
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+            String userId = userDetails.getId();
 
+            Page<OrderResponse> orderResponseList = orderService.agentOrders(userId,request);
+
+            return ResponseEntity.ok(new ApiResponse<>(false, null,orderResponseList));
+        }catch(Exception ex){
+            log.error(ex.getMessage(),ex);
+            return ResponseEntity.badRequest().body(new ApiResponse(false,ex.getMessage(),ex));
+
+        }
+    }
+
+    @GetMapping("/{orderId}/show")
+    @PreAuthorize("hasAnyRole('AGENT', 'ADMIN', 'USER')")
+    public ResponseEntity<ApiResponse> getOrder(@PathVariable String orderId) {
+        try{
+            OrderResponse orderResponse = orderService.getOrderById(orderId);
+            return ResponseEntity.ok(new ApiResponse<>(false, "Order information",orderResponse));
+        }catch(Exception ex){
+            log.error(ex.getMessage(),ex);
+            return ResponseEntity.badRequest().body(new ApiResponse(false,ex.getMessage(),ex));
+
+        }
+    }
+
+    @GetMapping("/{orderId}/items")
+    @PreAuthorize("hasAnyRole('AGENT', 'ADMIN', 'USER')")
+    public ResponseEntity<ApiResponse> getOrderItems(@PathVariable String orderId) {
+        try{
+            List<OrderItemResponse> orderItemResponse = orderService.orderItems(orderId);
+
+            return ResponseEntity.ok(new ApiResponse<>(false, "Order items",orderItemResponse));
+        }catch(Exception ex){
+            log.error(ex.getMessage(),ex);
+            return ResponseEntity.badRequest().body(new ApiResponse(false,ex.getMessage(),ex));
+
+        }
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse> getAllOrders(@ModelAttribute OrderSearchRequest request) {
+        try{
+            Page<OrderResponse> orderList = orderService.getAllOrders(request);
+
+            return ResponseEntity.ok(new ApiResponse<>(true, "List of orders",orderList));
+        }catch(Exception ex){
+            log.error(ex.getMessage(),ex);
+            return ResponseEntity.badRequest().body(new ApiResponse(false,ex.getMessage(),ex));
+        }
+    }
+
+    @PreAuthorize("hasRole('AGENT')")
+    @PostMapping("agent/{orderId}/accept")
+    public ResponseEntity<ApiResponse> agentAcceptOrder(@PathVariable String orderId) {
+        try{
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+            String userId = userDetails.getId();
+
+            OrderResponse orderResponse = orderService.acceptOrder(userId,orderId);
+
+            return ResponseEntity.ok(new ApiResponse<>(true, "Order accepted",orderResponse));
+        }catch(Exception ex){
+            log.error(ex.getMessage(),ex);
+            return ResponseEntity.badRequest().body(new ApiResponse(false,ex.getMessage(),ex));
+        }
+    }
+
+    @PreAuthorize("hasRole('AGENT')")
+    @PatchMapping("agent/items/update")
+    public ResponseEntity<ApiResponse> agentUpdateOrderItem(@RequestBody AgentUpdateItemRequest request) {
+        try{
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            CustomUserDetails userDetails = (CustomUserDetails) auth.getPrincipal();
+            String userId = userDetails.getId();
+
+            OrderItemResponse orderResponse = orderItemService.updateOrderItem(request);
+
+            return ResponseEntity.ok(new ApiResponse<>(true, "Order Item updated",orderResponse));
+        }catch(Exception ex){
+            log.error(ex.getMessage(),ex);
+            return ResponseEntity.badRequest().body(new ApiResponse(false,ex.getMessage(),ex));
+        }
+    }
 
 
 

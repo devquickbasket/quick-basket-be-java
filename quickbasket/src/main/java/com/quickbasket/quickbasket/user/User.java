@@ -2,6 +2,7 @@ package com.quickbasket.quickbasket.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.quickbasket.quickbasket.address.UserAddress;
+import com.quickbasket.quickbasket.agent.AgentOrder;
 import com.quickbasket.quickbasket.customs.Utils.BaseEntity;
 import com.quickbasket.quickbasket.order.Order;
 import com.quickbasket.quickbasket.role.Role;
@@ -41,6 +42,9 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = true)
+    private String phoneNumber;
+
     @Column(nullable = false)
     private Integer status = 100;
 
@@ -69,4 +73,9 @@ public class User extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "shop_id")
     private Shop shop;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "agent_orders", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<Order> agentOrders = new ArrayList<>();
+
 }

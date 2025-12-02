@@ -45,6 +45,7 @@ public class UserService {
             user.setFirstName(request.getFirstName());
             user.setLastName(request.getLastName());
             user.setEmail(request.getEmail());
+            user.setPhoneNumber(request.getPhoneNumber());
             user.setPassword(passwordEncoder.encode(request.getPassword()));
 
             if (request.getRole().equalsIgnoreCase("ROLE_AGENT")){

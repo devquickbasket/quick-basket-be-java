@@ -1,4 +1,4 @@
-package com.quickbasket.quickbasket.orderItem;
+package com.quickbasket.quickbasket.orderItem.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,4 +16,6 @@ public class AddOrderItemRequest {
     private String description;
     private BigDecimal totalPrice;
     private BigDecimal actualPrice;
+    private Integer status;
+    private String itemImage;
 }

@@ -1,5 +1,6 @@
 package com.quickbasket.quickbasket.security;
 
+import com.quickbasket.quickbasket.shop.response.ShopResponse;
 import com.quickbasket.quickbasket.user.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -7,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter

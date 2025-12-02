@@ -65,24 +65,34 @@ public class ShopService {
     }
 
     public ShopResponse assignAgent(AssignAgentRequest request) {
-        Shop shop = shopRepository.findById(request.getShopId()).orElse(null);
 
-        if (shop == null) {
-            throw new RuntimeException("Shop with id " + request.getShopId() + " not found");
+        Shop shop = shopRepository.findById(request.getShopId())
+                .orElseThrow(() -> new RuntimeException(
+                        "Shop with id " + request.getShopId() + " not found"));
+
+        User agent = userRepository.findAgentById(request.getAgentId())
+                .orElseThrow(() -> new RuntimeException(
+                        "Agent with id " + request.getAgentId() + " not found"));
+
+        // Initialize if null
+        List<User> agents = shop.getAgents();
+        if (agents == null) {
+            agents = new ArrayList<>();
+            shop.setAgents(agents);
         }
 
-        User user = userRepository.findAgentById(request.getAgentId()).orElse(null);
+        // Check if agent already assigned
+        boolean alreadyAssigned = agents.stream()
+                .anyMatch(a -> a.getId().equals(agent.getId()));
 
-        if (user == null) {
-            throw new RuntimeException("Agent with id " + request.getAgentId() + " not found");
+        if (alreadyAssigned) {
+            throw new RuntimeException("Agent is already assigned to this shop");
         }
 
-        List<User> agents = new ArrayList<>();
+        // Add agent to list
+        agents.add(agent);
 
-        agents.add(user);
-
-        shop.setAgents(agents);
-
+        // Persist changes
         shopRepository.save(shop);
 
         return new ShopResponse(shop);
@@ -115,6 +125,7 @@ public class ShopService {
         shop.setSlug(request.getSlug());
         shop.setState(request.getState());
         shop.setStatus(request.getStatus());
+        shop.setPhoneNumber(request.getPhone());
 
         shopRepository.save(shop);
         return new ShopResponse(shop);

@@ -2,6 +2,7 @@ package com.quickbasket.quickbasket.user.requests;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Null;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -25,6 +26,9 @@ public class UserRegistrationRequest {
 
     @NotBlank(message = "Password confirmation is required")
     private String confirmPassword;
+
+    @Null(message = "Phone number can be null")
+    private String phoneNumber;
 
     private String role;
 }

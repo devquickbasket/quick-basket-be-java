@@ -46,14 +46,16 @@ public class Order extends BaseEntity {
     private String address;
 
     @Column(precision = 10, scale = 2)
-    private BigDecimal deliveryFee;
+    private BigDecimal deliveryFee = BigDecimal.ZERO;
 
     @Column(precision = 10, scale = 2)
-    private BigDecimal expectedTotal;
+    private BigDecimal expectedTotal = new BigDecimal("0");
 
     @Column(precision = 10, scale = 2)
-    private BigDecimal actualTotal;
+    private BigDecimal actualTotal = new BigDecimal("0");
+
     private String contactNumber;
+
     @Column(precision = 10, scale = 2)
     private String longitude;
     @Column(precision = 10, scale = 2)

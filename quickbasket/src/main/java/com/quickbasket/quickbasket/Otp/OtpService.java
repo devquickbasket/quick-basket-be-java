@@ -22,7 +22,16 @@ public class OtpService {
     public void generateAndSendOtp(String email) {
         String otp = String.format("%06d", new Random().nextInt(999999));
 
-        Otp otpEntity = new Otp();
+        Optional<Otp> existingOTP = otpRepository.findByEmail(email);
+
+        Otp otpEntity;
+
+        if (existingOTP.isPresent()) {
+            otpEntity = existingOTP.get();
+        }else{
+            otpEntity = new Otp();
+        }
+
         otpEntity.setEmail(email);
         otpEntity.setOtp(otp);
         otpEntity.setExpiryDate(LocalDateTime.now().plusMinutes(5));

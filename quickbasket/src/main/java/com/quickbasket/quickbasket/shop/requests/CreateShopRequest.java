@@ -25,6 +25,9 @@ public class CreateShopRequest {
     private String state;
 
     private String slug;
+    private String phone;
+    private String role;
+    @NotBlank(message = "Phone number can be null")
     private String logo;
     private Integer status;
 }

@@ -13,6 +13,8 @@ public class ShopResponse {
     private String longitude;
     private String latitude;
     private Integer status;
+    private String phone;
+    private String state;
 
     public ShopResponse(Shop shop) {
         this.id = shop.getId();
@@ -22,5 +24,7 @@ public class ShopResponse {
         this.latitude = shop.getLatitude();
         this.longitude = shop.getLongitude();
         this.status = shop.getStatus();
+        this.phone = shop.getPhoneNumber();
+        this.state = shop.getState();
     }
 }

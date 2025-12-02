@@ -12,6 +12,7 @@ public class ShopAgentResponse {
     private String id;
     private String name;
     private String email;
+    private String phoneNumber;
     private Integer status;
 
     public ShopAgentResponse(User user){
@@ -19,5 +20,6 @@ public class ShopAgentResponse {
         this.name = user.getFirstName()+" "+user.getLastName();
         this.email = user.getEmail();
         this.status = user.getStatus();
+        this.phoneNumber = user.getPhoneNumber();
     }
 }

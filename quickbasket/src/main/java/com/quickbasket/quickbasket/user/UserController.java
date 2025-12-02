@@ -1,5 +1,6 @@
 package com.quickbasket.quickbasket.user;
 
+import com.quickbasket.quickbasket.Otp.OtpResendRequest;
 import com.quickbasket.quickbasket.Otp.OtpService;
 import com.quickbasket.quickbasket.Otp.OtpVerificationRequest;
 import com.quickbasket.quickbasket.customs.response.ApiResponse;
@@ -52,6 +53,18 @@ public class UserController {
 
             User user = userService.activateUser(request.getEmail());
             return ResponseEntity.ok(new ApiResponse<>(true, "User verification successful", user));
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, e.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/otp/resend")
+    public ResponseEntity<?> resendOtp(@RequestBody OtpResendRequest request) {
+        try {
+            otpService.generateAndSendOtp(request.getEmail());
+
+            return ResponseEntity.ok(new ApiResponse<>(true, "OTP Sent to successfully",null));
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, e.getMessage(), null));
