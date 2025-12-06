@@ -92,11 +92,15 @@ public class UserService {
             }
 
             if (!user.getStatus().equals(200)) {
+                log.error("Invalid credentials");
                 throw new IllegalStateException("Account is not activated");
             }
 
             String token = jwtUtil.generateToken(user.getEmail(),user.getFirstName(),user.getStatus(),user.getId());
-            LoginResponse loginResponse = new LoginResponse(token,user.getEmail(),user.getStatus(),user.getId(),user.getFirstName());
+
+            log.info("Activated token {}", token);
+
+            LoginResponse loginResponse = new LoginResponse(token,user.getEmail(),user.getStatus(),user.getId(),user.getFirstName(),user.getRoles().stream().findFirst().get().getName());
             user.setLastLogin(LocalDateTime.now());
 
             return loginResponse;
