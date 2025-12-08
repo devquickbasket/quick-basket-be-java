@@ -99,7 +99,7 @@ public class OrderController {
     public ResponseEntity<ApiResponse> getOrder(@PathVariable String orderId) {
         try{
             OrderResponse orderResponse = orderService.getOrderById(orderId);
-            return ResponseEntity.ok(new ApiResponse<>(false, "Order information",orderResponse));
+            return ResponseEntity.ok(new ApiResponse<>(true, "Order information",orderResponse));
         }catch(Exception ex){
             log.error(ex.getMessage(),ex);
             return ResponseEntity.badRequest().body(new ApiResponse(false,ex.getMessage(),ex));

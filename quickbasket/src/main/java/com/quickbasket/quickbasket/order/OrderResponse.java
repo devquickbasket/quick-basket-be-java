@@ -1,6 +1,7 @@
 package com.quickbasket.quickbasket.order;
 
 import com.quickbasket.quickbasket.address.UserAddress;
+import com.quickbasket.quickbasket.orderItem.OrderItemResponse;
 import com.quickbasket.quickbasket.shop.Shop;
 import com.quickbasket.quickbasket.shop.response.ShopResponse;
 import com.quickbasket.quickbasket.user.User;
@@ -10,6 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -27,6 +29,7 @@ public class OrderResponse {
     private BigDecimal actualTotal;
     private String address;
     private Integer status;
+    private List<OrderItemResponse>  orderItems;
 
     public  OrderResponse(Order order) {
         this.id = order.getId();
@@ -41,5 +44,10 @@ public class OrderResponse {
         this.latitude = order.getLatitude();
         this.longitude = order.getLongitude();
         this.address = order.getAddress();
+        this.orderItems = order.getOrderItems()
+                .stream()
+                .map(OrderItemResponse::new)
+                .toList();
+
     }
 }

@@ -15,7 +15,7 @@ public class OrderItemResponse {
     private String id;
     private String itemName;
     private Integer quantity;
-    private BigDecimal price;
+    private BigDecimal expectedPrice;
     private String description;
     private BigDecimal totalPrice;
     private BigDecimal actualPrice;
@@ -28,11 +28,12 @@ public class OrderItemResponse {
         this.itemName = orderItem.getItemName();
         this.id = orderItem.getId();
         this.quantity = orderItem.getQuantity();
-        this.orderResponse = new OrderResponse(orderItem.getOrder());
+//        this.orderResponse = new OrderResponse(orderItem.getOrder());
         this.availableQuantity = orderItem.getQuantityAvailable();
         this.status = orderItem.getStatus();
-        this.totalPrice = orderItem.getExpectedPrice();
+        this.totalPrice = orderItem.getExpectedTotalPrice();
         this.description = orderItem.getItemDescription();
         this.actualPrice = orderItem.getActualPrice();
+        this.expectedPrice = orderItem.getExpectedPrice();
     }
 }
